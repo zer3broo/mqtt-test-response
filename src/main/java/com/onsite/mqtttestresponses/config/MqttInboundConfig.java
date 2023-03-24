@@ -18,6 +18,7 @@ import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.core.MessageProducer;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
+import org.springframework.integration.router.PayloadTypeRouter;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -37,7 +38,6 @@ public class MqttInboundConfig {
         return new DirectChannel();
     }
 
-  
     @Bean
     public MessageProducer inbound() {
         MqttPahoMessageDrivenChannelAdapter adapter =
@@ -65,5 +65,8 @@ public class MqttInboundConfig {
         }  catch (JsonProcessingException e) {
             return "";
         }
+
+    }
+
 
 }
