@@ -53,26 +53,17 @@ public class MqttInboundConfig {
 
     @Bean
     @ServiceActivator(inputChannel = "mqttInputChannel", outputChannel = "routingChannel")
-    public MessageHandler stringDataHandler() {
-        return new MessageHandler() {
-            @Override
-            public void handleMessage(Message<?> message) throws MessagingException {
-                String payload = message.getPayload().toString();
-                ObjectMapper jsonMapper = new ObjectMapper();
-                JsonNode node;
-                try {
-                    node = jsonMapper.readTree(payload);
-                    ((ObjectNode)node).remove("cmd");
-                    log.info(node.toString());
-              
-                    Message<?> newMessage = MessageBuilder.withPayload(node.toString()).copyHeadersIfAbsent(message.getHeaders()).build();
-                    wrapDataChanel().send(newMessage);
-                }  catch (JsonProcessingException e) {
-
-                }
-            }
-        };
-
-    }
+    public String stringDataHandler(Message<?> message) {
+        String payload = message.getPayload().toString();
+        ObjectMapper jsonMapper = new ObjectMapper();
+        JsonNode node;
+        try {
+            node = jsonMapper.readTree(payload);
+            ((ObjectNode)node).remove("cmd");
+            log.info(node.toString());
+            return node.toString();
+        }  catch (JsonProcessingException e) {
+            return "";
+        }
 
 }
