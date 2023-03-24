@@ -39,6 +39,8 @@ public class MqttInboundConfig {
     }
 
     @Bean
+    public MessageChannel wrapDataChanel (){return new DirectChannel();}
+    @Bean
     public MessageProducer inbound() {
         MqttPahoMessageDrivenChannelAdapter adapter =
                 new MqttPahoMessageDrivenChannelAdapter("tcp://edgex-mqtt-broker:1883", "testDevice",
@@ -50,23 +52,27 @@ public class MqttInboundConfig {
         return adapter;
     }
 
-
     @Bean
-    @ServiceActivator(inputChannel = "mqttInputChannel", outputChannel = "routingChannel")
-    public String stringDataHandler(Message<?> message) {
-        String payload = message.getPayload().toString();
-        ObjectMapper jsonMapper = new ObjectMapper();
-        JsonNode node;
-        try {
-            node = jsonMapper.readTree(payload);
-            ((ObjectNode)node).remove("cmd");
-            log.info(node.toString());
-            return node.toString();
-        }  catch (JsonProcessingException e) {
-            return "";
-        }
+    @ServiceActivator(inputChannel = "mqttInputChannel", outputChannel = "wrapDataChanel")
+    public MessageHandler stringDataHandler() {
+        return new MessageHandler() {
+            @Override
+            public void handleMessage(Message<?> message) throws MessagingException {
+                String payload = message.getPayload().toString();
+                ObjectMapper jsonMapper = new ObjectMapper();
+                JsonNode node;
+                try {
+                    node = jsonMapper.readTree(payload);
+                    ((ObjectNode)node).remove("cmd");
+                    log.info(node.toString());
+                    Message<?> newMessage = MessageBuilder.withPayload(node.toString()).copyHeadersIfAbsent(message.getHeaders()).build();
+                    wrapDataChanel().send(newMessage);
+                }  catch (JsonProcessingException e) {
+
+                }
+            }
+        };
 
     }
-
 
 }
