@@ -64,6 +64,8 @@ public class MqttInboundConfig {
                 try {
                     node = jsonMapper.readTree(payload);
                     ((ObjectNode)node).remove("cmd");
+                    log.info(node.toString());
+              
                     Message<?> newMessage = MessageBuilder.withPayload(node.toString()).copyHeadersIfAbsent(message.getHeaders()).build();
                     wrapDataChanel().send(newMessage);
                 }  catch (JsonProcessingException e) {
