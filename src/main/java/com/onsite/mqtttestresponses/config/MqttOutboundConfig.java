@@ -26,7 +26,7 @@ public class MqttOutboundConfig {
     public MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setServerURIs(new String[]{"tcp://edgex-mqtt-broker:1883"});
+        options.setServerURIs(new String[]{"tcp://loclahost:1883"});
         options.setUserName(username);
         options.setPassword(password.toCharArray());
         factory.setConnectionOptions(options);
