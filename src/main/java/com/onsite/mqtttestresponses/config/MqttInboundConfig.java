@@ -37,8 +37,7 @@ public class MqttInboundConfig {
         return new DirectChannel();
     }
 
-    @Bean
-    public MessageChannel wrapDataChanel (){return new DirectChannel();}
+  
     @Bean
     public MessageProducer inbound() {
         MqttPahoMessageDrivenChannelAdapter adapter =
