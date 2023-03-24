@@ -34,27 +34,13 @@ public class MqttOutboundConfig {
     }
 
     @Bean
-    @ServiceActivator(inputChannel = "mqttOutboundChannel")
+    @ServiceActivator(inputChannel = "wrapDataChanel")
     public MessageHandler mqttOutbound() {
         MqttPahoMessageHandler messageHandler =
                 new MqttPahoMessageHandler("testDevice01", mqttClientFactory());
         messageHandler.setAsync(true);
         messageHandler.setDefaultTopic("respondingData");
         return messageHandler;
-    }
-
-    @Bean
-    public MessageChannel mqttOutboundChannel() {
-        return new DirectChannel();
-    }
-
-    @ServiceActivator(inputChannel = "routingChannel")
-    @Bean
-    public PayloadTypeRouter router(){
-        PayloadTypeRouter router = new PayloadTypeRouter();
-        router.setChannelMapping("null", "errorChannel");
-        router.setChannelMapping(String.class.getName(), "mqttOutboundChannel");
-        return router;
     }
 
 }
