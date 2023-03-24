@@ -42,7 +42,7 @@ public class MqttInboundConfig {
     @Bean
     public MessageProducer inbound() {
         MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter("tcp://loclahost:1883", "testDevice",
+                new MqttPahoMessageDrivenChannelAdapter("tcp://edgex-mqtt-broker:1883", "testDevice",
                         "CommandTopic");
         adapter.setCompletionTimeout(5000);
         adapter.setConverter(new DefaultPahoMessageConverter());
